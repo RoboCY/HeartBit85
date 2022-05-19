@@ -1,3 +1,6 @@
+
+//#include <Arduino.h>
+
 #include <Adafruit_NeoPixel.h>
 #ifdef __AVR__
  #include <avr/power.h> // Required for 16 MHz Adafruit Trinket
@@ -15,8 +18,36 @@ int r,g,b;
 int animationLoops = 0;
 int middlePixel=NUMPIXELS/2;
 
-int currentAnim = 3;
+int currentAnim = 0;
 
+void animation(int x);
+
+
+// Input a value 0 to 255 to get a color value.
+// The colours are a transition r - g - b - back to r.
+uint32_t Wheel(byte WheelPos, float brightness) {
+  if(WheelPos < 85) {
+   return pixels.Color((WheelPos * 3)*brightness, (255 - WheelPos * 3)*brightness, 0);
+  } else if(WheelPos < 170) {
+   WheelPos -= 85;
+   return pixels.Color((255 - WheelPos * 3)*brightness, 0, (WheelPos * 3)*brightness);
+  } else {
+   WheelPos -= 170;
+   return pixels.Color(0, (WheelPos * 3)*brightness, (255 - WheelPos * 3)*brightness);
+  }
+}
+
+void clear() {
+  for(int i=0; i<NUMPIXELS; i++) {
+    pixels.setPixelColor(i, pixels.Color(0,0,0));
+  }
+  pixels.show();  
+}
+
+void playNextAnimation() {
+    animation(currentAnim);
+    currentAnim++;  
+}
 
 void setup() {
   #if defined(__AVR_ATtiny85__) && (F_CPU == 16000000)
@@ -24,13 +55,13 @@ void setup() {
   #endif
   pinMode(BTN_PIN,INPUT_PULLUP);
   pixels.begin();
+  clear();
 }
 
 
 void loop() {
   if(digitalRead(BTN_PIN)==LOW){
-    animation(currentAnim);
-    currentAnim++;
+    playNextAnimation();
   }
 
 
@@ -147,7 +178,7 @@ void animation(int x){
        
 
         for(i=0; i<NUMPIXELS; i++) {
-          pixels.setPixelColor(i, Wheel((i*13) & 255));
+          pixels.setPixelColor(i, Wheel((i*13) & 255, 0.3));
           pixels.show();
           delay(DELAYVAL);
         }
@@ -166,28 +197,60 @@ void animation(int x){
       
                
       break;
-            
-    default:
+
+
+    case 4:
+      animationLoops = 0;
+
+      uint16_t i, j;
+
+      j = 1;
+      while(animationLoops<MAX_ANIM_LOOPS*8){
+        
+       
+
+        for(i=0; i<NUMPIXELS; i++) {
+          if(i%2 == 0) {
+            pixels.setPixelColor(i, Wheel((i*j)+30 & 255, 0.5));
+          }
+          else {
+            pixels.setPixelColor(i, Wheel(((i-1)*j)+30 & 255, 0.2));
+//            pixels.setPixelColor(i, pixels.Color(0,0,0));
+          }
+        }
+        pixels.show();
+
+        delay(100);
+
+        for(i=0; i<NUMPIXELS; i++) {
+          if(i%2 == 0) {
+            pixels.setPixelColor(i, Wheel(((i-1)*j)+30 & 255, 0.2));
+//            pixels.setPixelColor(i, pixels.Color(0,0,0));
+          }
+          else {
+            pixels.setPixelColor(i, Wheel((i*j)+30 & 255, 0.5));
+          }
+        }
+        pixels.show();
+
+        delay(100);
+               
+        animationLoops++;
+        j++;
+      }
+
+
+      clear();
+      
+               
+      break;            
+    case 5:
       currentAnim = 0;
-      animation(currentAnim);
+      playNextAnimation();
       break;
     
   }
 
 
 
-}
-
-// Input a value 0 to 255 to get a color value.
-// The colours are a transition r - g - b - back to r.
-uint32_t Wheel(byte WheelPos) {
-  if(WheelPos < 85) {
-   return pixels.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
-  } else if(WheelPos < 170) {
-   WheelPos -= 85;
-   return pixels.Color(255 - WheelPos * 3, 0, WheelPos * 3);
-  } else {
-   WheelPos -= 170;
-   return pixels.Color(0, WheelPos * 3, 255 - WheelPos * 3);
-  }
 }

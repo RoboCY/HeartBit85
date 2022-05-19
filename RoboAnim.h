@@ -53,7 +53,8 @@ namespace RoboAnim {
     void generateRandomColor() {
         r = 255;
         g = random(0,100);
-        b = random(0,150);         
+        b = (r+g > 300) ? random(0,40) : random(0,100);
+        // b = random(0,150);
     }
 
 

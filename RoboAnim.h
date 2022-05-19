@@ -70,14 +70,14 @@ namespace RoboAnim {
         int trips = 1;
         while(trips<numPixels+1){
             for(int i=0; i<numPixels; i++) {
-                pixelPaint(i, 0.2);
+                pixelPaint(i, 1);
                 pixelTurnOff(i-trips);
                 pixels->show();
                 delay(numPixels-trips);
             }
             trips++;
             for(int i=numPixels; i>-1; i--) {
-                pixelPaint(i, 0.2);
+                pixelPaint(i, 1);
                 pixelTurnOff(i+trips);
                 pixels->show();
                 delay(numPixels-trips);

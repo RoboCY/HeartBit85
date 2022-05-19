@@ -67,21 +67,25 @@ namespace RoboAnim {
 
     void anim0() {
         generateRandomColor();
-        int animationLoops = 0;
-        while(animationLoops<3){
+        int trips = 1;
+        while(trips<numPixels+1){
             for(int i=0; i<numPixels; i++) {
-            pixels->setPixelColor(i, pixels->Color(r, g, b));
-            pixels->show();
-            delay(15);
+                pixelPaint(i, 0.2);
+                pixelTurnOff(i-trips);
+                pixels->show();
+                delay(numPixels-trips);
             }
-            for(int i=numPixels; i>-1; i--) { // For each pixel...
-            pixels->setPixelColor(i, pixels->Color(0, 0, 0));
-            pixels->show();
-            delay(15);
+            trips++;
+            for(int i=numPixels; i>-1; i--) {
+                pixelPaint(i, 0.2);
+                pixelTurnOff(i+trips);
+                pixels->show();
+                delay(numPixels-trips);
             }  
-            delay(1000);
-            animationLoops++;
-        }        
+            // delay(10);
+            trips++;
+        }
+        delay(1000);    
     }
 
 

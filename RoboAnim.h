@@ -38,7 +38,7 @@ namespace RoboAnim {
 
     void stripClear() {
         for(int i=0; i<numPixels; i++) {
-            pixels.setPixelColor(i, pixels.Color(0,0,0));
+            pixelTurnOff(i);
         }
         pixels.show();  
     }
@@ -274,14 +274,20 @@ namespace RoboAnim {
                 pixelPaint(i, 1);
                 pixelTurnOff(i-trips);
                 pixels.show();
-                delay(numPixels-trips);
+                // delay(60-(trips*4));
+                // delay((numPixels-trips)*0.6);
+                // delay(80 * (1/((float)trips/2))));
+                delay((numPixels-trips)*(1/((float)trips/4)));
             }
             trips++;
             for(int i=numPixels; i>-1; i--) {
                 pixelPaint(i, 1);
                 pixelTurnOff(i+trips);
                 pixels.show();
-                delay(numPixels-trips);
+                // delay(60-(trips*4));
+                // delay(80 * (1/((float)trips/2))));
+                // delay((numPixels-trips)*0.6);
+                delay((numPixels-trips)*(1/((float)trips/4)));
             }
             trips++;
         }

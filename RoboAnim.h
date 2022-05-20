@@ -2,6 +2,7 @@
 
 #define LED_PIN PB0
 #define NUMPIXELS 24
+#define BRIGHTNESS 0.5 // 0-1
 
 namespace RoboAnim {
 
@@ -27,7 +28,7 @@ namespace RoboAnim {
     /************************/
 
     void pixelPaint(int pixel, float brightness) {
-        pixels.setPixelColor(pixel, pixels.Color(r*brightness, g*brightness, b*brightness));
+        pixels.setPixelColor(pixel, pixels.Color(r*brightness*BRIGHTNESS, g*brightness*BRIGHTNESS, b*brightness*BRIGHTNESS));
     }
 
 
@@ -57,15 +58,15 @@ namespace RoboAnim {
 
     uint32_t wheel(byte wheelPos, float brightness) {
         if(wheelPos < 85) {
-            return pixels.Color((wheelPos * 3)*brightness, (255 - wheelPos * 3)*brightness, 0);
+            return pixels.Color((wheelPos * 3)*brightness*BRIGHTNESS, (255 - wheelPos * 3)*brightness*BRIGHTNESS, 0);
         } 
         else if(wheelPos < 170) {
             wheelPos -= 85;
-            return pixels.Color((255 - wheelPos * 3)*brightness, 0, (wheelPos * 3)*brightness);
+            return pixels.Color((255 - wheelPos * 3)*brightness*BRIGHTNESS, 0, (wheelPos * 3)*brightness*BRIGHTNESS);
         }
         else {
             wheelPos -= 170;
-            return pixels.Color(0, (wheelPos * 3)*brightness, (255 - wheelPos * 3)*brightness);
+            return pixels.Color(0, (wheelPos * 3)*brightness*BRIGHTNESS, (255 - wheelPos * 3)*brightness*BRIGHTNESS);
         }
     }
 

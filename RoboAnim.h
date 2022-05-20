@@ -1,7 +1,6 @@
 #include <Adafruit_NeoPixel.h>
 
 #define LED_PIN PB0
-#define BTN_PIN PB1
 #define NUMPIXELS 24
 
 namespace RoboAnim {
@@ -187,25 +186,30 @@ namespace RoboAnim {
 
 
     void anim4() {
+        generateRandomColor();
         int j = 1;
         int animationLoops = 0;
         while(animationLoops<18){
             for(int i=0; i<numPixels; i++) {
                 if(i%2 == 0) {
-                    pixels.setPixelColor(i, Wheel((i*j)+30 & 255, 0.8));
+                    // pixels.setPixelColor(i, Wheel((i*j)+30 & 255, 0.8));
+                    pixelPaint(i, 1);
                 }
                 else {
-                    pixels.setPixelColor(i, Wheel(((i-1)*j)+30 & 255, 0.3));
+                    // pixels.setPixelColor(i, Wheel(((i-1)*j)+30 & 255, 0.3));
+                    pixelPaint(i, 0.3);
                 }
             }
             pixels.show();
             delay(100);
             for(int i=0; i<numPixels; i++) {
                 if(i%2 == 0) {
-                    pixels.setPixelColor(i, Wheel(((i-1)*j)+30 & 255, 0.2));
+                    // pixels.setPixelColor(i, Wheel(((i-1)*j)+30 & 255, 0.2));
+                    pixelPaint(i, 0.3);
                 }
                 else {
-                    pixels.setPixelColor(i, Wheel((i*j)+30 & 255, 0.5));
+                    // pixels.setPixelColor(i, Wheel((i*j)+30 & 255, 0.5));
+                    pixelPaint(i, 1);
                 }
             }
             pixels.show();
@@ -309,5 +313,55 @@ namespace RoboAnim {
         }
     }
 
+
+
+
+    void anim8() {
+        generateRandomColor();
+        int animationLoops = 0;
+        while(animationLoops<9){
+            // fade in evens
+            for(int j=1; j<numPixels; j++) {
+                for(int i=0; i<numPixels; i++) {
+                    if(i%2 == 0) {
+                        pixelPaint(i, ((float)j/(float)numPixels));
+                    }
+                    else {
+                        pixelPaint(i, 1-((float)j/(float)numPixels));
+                    }
+                }
+                pixels.show();
+                delay(2);
+            }
+            // fade out evens
+            for(int j=1; j<numPixels; j++) {
+                for(int i=0; i<numPixels; i++) {
+                    if(i%2 == 0) {
+                        pixelPaint(i, 1-((float)j/(float)numPixels));
+                    }
+                    else {
+                        pixelPaint(i, ((float)j/(float)numPixels));
+                    }
+                }
+                pixels.show();
+                delay(2);
+            }
+            animationLoops++;
+        }
+        stripClear();
+    }    
+
+
+
+
+    void anim9() {
+        generateRandomColor();
+        // int litPixels[24];
+        for(int i=0; i<(numPixels*3)+1; i++) {
+            pixelPaint(random(0,numPixels-1), 1);
+            pixels.show();
+            delay(40);
+        }
+    }
 
 }

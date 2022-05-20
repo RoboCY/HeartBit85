@@ -1,7 +1,11 @@
 #include "RoboAnim.h"
 #ifdef __AVR__
  #include <avr/power.h> // Required for 16 MHz Adafruit Trinket
+ #include <avr/sleep.h> 
+ #include <avr/interrupt.h> 
 #endif
+
+#define BTN_PIN PB1
 
 int currentAnim = 0;
 
@@ -49,6 +53,12 @@ void playAnimation(int x){
       break;
     case 7:
       RoboAnim::anim7();
+      break;
+    case 8:
+      RoboAnim::anim8();
+      break;
+    case 9:
+      RoboAnim::anim9();
       break;
     default:
       currentAnim = -1;

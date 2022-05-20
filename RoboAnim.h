@@ -1,15 +1,24 @@
 #include <Adafruit_NeoPixel.h>
 
+#define LED_PIN PB0
+#define BTN_PIN PB1
+#define NUMPIXELS 24
+
 namespace RoboAnim {
 
-    Adafruit_NeoPixel *pixels; // reference to the pixels object
+    /**********************/
+    /******** INIT ********/
+    /**********************/
+
+    Adafruit_NeoPixel pixels(NUMPIXELS, LED_PIN, NEO_GRB + NEO_KHZ800);
+
     int numPixels = 0;
     int middlePixel = 0;
     int r,g,b;
 
-    void init(Adafruit_NeoPixel *p) {
-        pixels = p;
-        numPixels = pixels->numPixels();
+    void init() {
+        pixels.begin();
+        numPixels = pixels.numPixels();
         middlePixel = numPixels/2;
     }
 
@@ -19,44 +28,43 @@ namespace RoboAnim {
     /************************/
 
     void pixelPaint(int pixel, float brightness) {
-        pixels->setPixelColor(pixel, pixels->Color(r*brightness, g*brightness, b*brightness));
+        pixels.setPixelColor(pixel, pixels.Color(r*brightness, g*brightness, b*brightness));
     }
 
 
     void pixelTurnOff(int pixel) {
-        pixels->setPixelColor(pixel, pixels->Color(0,0,0));
+        pixels.setPixelColor(pixel, pixels.Color(0,0,0));
     }
 
 
     void stripClear() {
         for(int i=0; i<numPixels; i++) {
-            pixels->setPixelColor(i, pixels->Color(0,0,0));
+            pixels.setPixelColor(i, pixels.Color(0,0,0));
         }
-        pixels->show();  
+        pixels.show();  
     }
 
 
     uint32_t Wheel(byte WheelPos, float brightness) {
         if(WheelPos < 85) {
-            return pixels->Color((WheelPos * 3)*brightness, (255 - WheelPos * 3)*brightness, 0);
+            return pixels.Color((WheelPos * 3)*brightness, (255 - WheelPos * 3)*brightness, 0);
         } 
         else if(WheelPos < 170) {
             WheelPos -= 85;
-            return pixels->Color((255 - WheelPos * 3)*brightness, 0, (WheelPos * 3)*brightness);
+            return pixels.Color((255 - WheelPos * 3)*brightness, 0, (WheelPos * 3)*brightness);
         }
         else {
             WheelPos -= 170;
-            return pixels->Color(0, (WheelPos * 3)*brightness, (255 - WheelPos * 3)*brightness);
+            return pixels.Color(0, (WheelPos * 3)*brightness, (255 - WheelPos * 3)*brightness);
         }
     }
+
 
     void generateRandomColor() {
         r = 255;
         g = random(0,100);
         b = (r+g > 300) ? random(0,40) : random(0,100);
-        // b = random(0,150);
     }
-
 
 
 
@@ -72,14 +80,14 @@ namespace RoboAnim {
             for(int i=0; i<numPixels; i++) {
                 pixelPaint(i, 1);
                 pixelTurnOff(i-trips);
-                pixels->show();
+                pixels.show();
                 delay(numPixels-trips);
             }
             trips++;
             for(int i=numPixels; i>-1; i--) {
                 pixelPaint(i, 1);
                 pixelTurnOff(i+trips);
-                pixels->show();
+                pixels.show();
                 delay(numPixels-trips);
             }  
             // delay(10);
@@ -98,13 +106,13 @@ namespace RoboAnim {
             for(int i=0; i<=middlePixel; i++) {
                 pixelPaint(middlePixel+i, 1);
                 pixelPaint(middlePixel-i, 1);
-                pixels->show();
+                pixels.show();
                 delay(30);
             }
             for(int i=0; i<=middlePixel; i++) {
                 pixelTurnOff(middlePixel+i);
                 pixelTurnOff(middlePixel-i);
-                pixels->show();
+                pixels.show();
                 delay(30);
             }
             delay(1000);
@@ -130,7 +138,7 @@ namespace RoboAnim {
                 pixelPaint(middlePixel-i+2, 0.2);
                 pixelPaint(middlePixel-i+1, 0.5);
                 pixelPaint(middlePixel-i, 1);
-                pixels->show();
+                pixels.show();
                 delay(30);
             }     
             for(int i=0; i<=numPixels/2; i++) {
@@ -144,7 +152,7 @@ namespace RoboAnim {
                 pixelPaint(numPixels-i+2, 0.2);
                 pixelPaint(numPixels-i+1, 0.5);
                 pixelPaint(numPixels-i, 1);
-                pixels->show();
+                pixels.show();
                 delay(30);
             }
             stripClear();
@@ -160,14 +168,14 @@ namespace RoboAnim {
         int animationLoops = 0;
         while(animationLoops<3){
             for(int i=0; i<numPixels; i++) {
-                pixels->setPixelColor(i, Wheel((i*13) & 255, 0.8));
-                pixels->show();
+                pixels.setPixelColor(i, Wheel((i*13) & 255, 0.8));
+                pixels.show();
                 delay(15);
             }
             delay(300);
             for(int i=0; i<numPixels; i++) {
                 pixelTurnOff(i);
-                pixels->show();
+                pixels.show();
                 delay(15);
             }
             delay(1000);
@@ -184,23 +192,23 @@ namespace RoboAnim {
         while(animationLoops<18){
             for(int i=0; i<numPixels; i++) {
                 if(i%2 == 0) {
-                    pixels->setPixelColor(i, Wheel((i*j)+30 & 255, 0.8));
+                    pixels.setPixelColor(i, Wheel((i*j)+30 & 255, 0.8));
                 }
                 else {
-                    pixels->setPixelColor(i, Wheel(((i-1)*j)+30 & 255, 0.3));
+                    pixels.setPixelColor(i, Wheel(((i-1)*j)+30 & 255, 0.3));
                 }
             }
-            pixels->show();
+            pixels.show();
             delay(100);
             for(int i=0; i<numPixels; i++) {
                 if(i%2 == 0) {
-                    pixels->setPixelColor(i, Wheel(((i-1)*j)+30 & 255, 0.2));
+                    pixels.setPixelColor(i, Wheel(((i-1)*j)+30 & 255, 0.2));
                 }
                 else {
-                    pixels->setPixelColor(i, Wheel((i*j)+30 & 255, 0.5));
+                    pixels.setPixelColor(i, Wheel((i*j)+30 & 255, 0.5));
                 }
             }
-            pixels->show();
+            pixels.show();
             delay(100);
             animationLoops++;
             j++;
@@ -219,7 +227,7 @@ namespace RoboAnim {
                 for(int i=0; i<numPixels; i++) {
                     pixelPaint(i, ((float)j/(float)numPixels));
                 }
-                pixels->show();
+                pixels.show();
                 delay(2);
             }
             // fade out
@@ -227,7 +235,7 @@ namespace RoboAnim {
                 for(int i=0; i<numPixels; i++) {
                     pixelPaint(i, ((float)j/(float)numPixels));
                 }
-                pixels->show();
+                pixels.show();
                 delay(2);
             }
             // fade in
@@ -235,7 +243,7 @@ namespace RoboAnim {
                 for(int i=0; i<numPixels; i++) {
                     pixelPaint(i, ((float)j/(float)numPixels));
                 }
-                pixels->show();
+                pixels.show();
                 delay(2);
             }
             // fade out
@@ -243,7 +251,7 @@ namespace RoboAnim {
                 for(int i=0; i<numPixels; i++) {
                     pixelPaint(i, ((float)j/(float)numPixels));
                 }
-                pixels->show();
+                pixels.show();
                 delay(10);
             }
             stripClear();
@@ -262,14 +270,14 @@ namespace RoboAnim {
                 // animate left half (up->down)
                 pixelPaint(middlePixel-i, 1);
                 if((numPixels/2)-i > j) pixelTurnOff(middlePixel-i+1);
-                pixels->show();
+                pixels.show();
                 delay(10);
             }
             for(int i=0; i<=numPixels/2; i++) {
                 // animate right half (up->down)
                 pixelPaint(middlePixel+i, 1);
                 if(i < (numPixels/2)-j) pixelTurnOff(middlePixel+i-1);
-                pixels->show();
+                pixels.show();
                 delay(10);
             }
         }
@@ -296,7 +304,7 @@ namespace RoboAnim {
             p = currentPixel-1 >= 0 ? currentPixel-1 : (currentPixel-1)+numPixels;
             pixelPaint(p, 0.6);
             pixelPaint(currentPixel, 1);
-            pixels->show();
+            pixels.show();
             delay(40);
         }
     }

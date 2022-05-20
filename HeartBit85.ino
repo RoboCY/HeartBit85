@@ -1,25 +1,16 @@
-
-#include <Adafruit_NeoPixel.h>
 #include "RoboAnim.h"
 #ifdef __AVR__
  #include <avr/power.h> // Required for 16 MHz Adafruit Trinket
 #endif
 
-#define LED_PIN PB0
-#define BTN_PIN PB1
-#define NUMPIXELS 24
-
-Adafruit_NeoPixel pixels(NUMPIXELS, LED_PIN, NEO_GRB + NEO_KHZ800);
 int currentAnim = 0;
-
 
 void setup() {
   #if defined(__AVR_ATtiny85__) && (F_CPU == 16000000)
     clock_prescale_set(clock_div_1);
   #endif
   pinMode(BTN_PIN,INPUT_PULLUP);
-  pixels.begin();
-  RoboAnim::init(&pixels);
+  RoboAnim::init();
   RoboAnim::stripClear();
 }
 
@@ -27,7 +18,7 @@ void setup() {
 void loop() {
   if(digitalRead(BTN_PIN)==LOW){
     playAnimation(currentAnim);
-    delay(100);
+    delay(50);
   }
   delay(10);
 }
